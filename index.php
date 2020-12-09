@@ -3,21 +3,28 @@
 
   echo "INSCRIPTION";
   $Jeremy = new User();
-  $Jeremy->register('Test', 'jeremy2', 'jeremy', 'jeremy', 'jeremy');
-  var_dump($Jeremy);
-  echo "<br /> <br />";
+  // $Jeremy->register('Jeremy', 'azerty', 'jeremy@dejoux', 'jeremy', 'yondaime');
+  // var_dump($Jeremy);
+  // echo "<br /> <br />";
 
   echo "CONNEXION";
-  $Jeremy = new User();
-  $Jeremy->connect('Test', 'jeremy2');
+  $Jeremy->connect('Jeremy', 'azerty');
   var_dump($Jeremy);
   echo "<br /> <br />";
 
-  echo "DECONNEXION";
-  $Jeremy = new User();
-  $Jeremy->disconnect();
+  // echo "DECONNEXION";
+  // $Jeremy->disconnect();
+  // var_dump($Jeremy);
+  // echo "<br /> <br />";
+
+  // echo "DELETE";
+  // $Jeremy->delete();
+  // var_dump($Jeremy);
+  // echo "<br /> <br />";
+
+
+  echo "UPDATE";
+  $Jeremy->update('Minato','12345', 'yondaime@', 'namikaze', 'minato');
   var_dump($Jeremy);
   echo "<br /> <br />";
-
-
  ?>
