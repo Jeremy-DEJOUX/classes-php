@@ -81,7 +81,6 @@
       // $this->email = null;
       // $this->firstname = null;
       // $this->lastname = null;
-
       echo "vous êtes déonnecté";
     }
 
@@ -129,34 +128,50 @@
 
 
     public function isConnected(){
-
+      if ($this->login) {
+        echo "<br />Un Utilisateur est connecté";
+      }
+      else {
+        echo "Pas d'utilisateur connecté";
+      }
     }
 
     public function getAllInfos(){
-
+      return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];
     }
 
     public function getLogin(){
-
+      return [$this->login];
     }
 
     public function getEmail(){
-
+      return [$this->email];
     }
 
     public function getFirstname(){
-
+      return [$this->firstname];
     }
 
     public function getLastname(){
-
+      return [$this->lastname];
     }
 
     public function refresh(){
+      $bdd = mysqli_connect('localhost', 'root', '', 'classes');
+      $user = $this->login;
+      $query = mysqli_query($bdd, "SELECT * FROM utilisateurs WHERE login = '$user'");
+      $count = mysqli_num_rows($query);
 
+      if ($count) {
+        $result = mysqli_fetch_assoc($query);
+          $this->login = $result['login'];
+          $this->password = $result['password'];
+          $this->email = $result['email'];
+          $this->firstname = $result['firstname'];
+          $this->lastname = $result['lastname'];
+        }
+          return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];
+      }
     }
-
-
-  }
 
 ?>
