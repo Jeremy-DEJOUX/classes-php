@@ -20,9 +20,6 @@ class User{
       $lenght_lastname = strlen($lastname);
 
       if ($lenght_login <= 255 AND $lenght_password <=255 AND $lenght_email <= 255 AND $lenght_firstname <= 255 AND $lenght_lastname <= 255) {
-        $select = $bdd->prepare("SELECT * FROM utilisateurs WHERE login = :login");
-        $select->execute(array(':login' => $login));
-
         $count = $bdd->prepare("SELECT COUNT(*) FROM utilisateurs WHERE login = :login");
         $count->execute(array(':login' => $login));
         $num_rows = $count->fetchColumn();
@@ -64,8 +61,40 @@ class User{
     return [$this->login,$this->password, $this->email, $this->firstname, $this->lastname,];
   }
 
-  public function connect($login, $password){
 
+
+
+
+  public function connect($login, $password){
+    $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $error = null;
+
+    if (!empty($login) AND !empty($password)) {
+      $count = $bdd->prepare("SELECT COUNT(*) FROM utilisateurs WHERE login = :login");
+      $count->execute(array(
+        ':login' => $login
+      ));
+      $num_rows = $count->fetchColumn();
+
+      if ($num_rows) {
+        $result = $bdd->prepare("SELECT * FROM utilisateurs WHERE login = :login");
+        $result->execute(array(
+          ':login' => $login
+        ));
+
+        while ($donnees = $result->fetch()) {
+          if (password_verify($password, $donnees['password'])) {
+            $this->id = $donnees['id'];
+            $this->login = $login;
+            $this->password = $donnees['password'];
+            $this->email = $donnees['email'];
+            $this->firstname = $donnees['firstname'];
+            $this->lastname = $donnees['lastname'];
+          }
+        }
+      }
+    }
+    return [$this->id, $this->login, $this->password, $this->email, $this->firstname, $this->lastname];
   }
 
   public function disconnect(){
