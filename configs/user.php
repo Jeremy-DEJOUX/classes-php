@@ -77,7 +77,7 @@
 
 
     public function disconnect(){
-      unset($this->login, $this->password, $this->email, $this->firstname, $this->lastname);
+      unset($this->id, $this->login, $this->password, $this->email, $this->firstname, $this->lastname);
       // $this->login = null;
       // $this->password = null;
       // $this->email = null;

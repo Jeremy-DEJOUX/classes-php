@@ -8,8 +8,12 @@ class User{
   public $firstname;
   public $lastname;
 
+
+// ==========================================INSCRIPTION=================================================================================================
   public function register($login, $password, $email, $firstname, $lastname){
     $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     $error = null;
 
     if (!empty($login) AND !empty($password) AND !empty($email) AND !empty($firstname) AND !empty($lastname)) {
@@ -63,10 +67,12 @@ class User{
 
 
 
-
+// ===================================CONNEXION================================================================================================
 
   public function connect($login, $password){
     $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     $error = null;
 
     if (!empty($login) AND !empty($password)) {
@@ -79,7 +85,7 @@ class User{
       if ($num_rows) {
         $result = $bdd->prepare("SELECT * FROM utilisateurs WHERE login = :login");
         $result->execute(array(
-          ':login' => $login
+          ':login' => $login,
         ));
 
         while ($donnees = $result->fetch()) {
@@ -90,24 +96,83 @@ class User{
             $this->email = $donnees['email'];
             $this->firstname = $donnees['firstname'];
             $this->lastname = $donnees['lastname'];
+            $error = "<b>Vous êtes connecté</b>";
+          }
+          else {
+            $error = "Les mots de passe ne corespondent pas";
           }
         }
       }
+      else {
+        $error = "Le login n'existe pas";
+      }
     }
+    else {
+      $error = "Il faut remplir tous les champs";
+    }
+    echo $error;
     return [$this->id, $this->login, $this->password, $this->email, $this->firstname, $this->lastname];
   }
 
+
+
+  // =============================================DECONNEXION=================================================================================
+
   public function disconnect(){
-
+    unset($this->id, $this->login, $this->password, $this->email, $this->firstname, $this->lastname);
   }
 
+
+// ===============================================SUPRIMER===============================================================================================
   public function delete(){
+    $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    $id = $this->id;
+    $query = $bdd->prepare("DELETE FROM utilisateurs WHERE id = :id");
+    $query->execute([':id' => $id]);
   }
 
+
+
+
+// ===============================================UPDATE=============================================================================================
   public function update($login, $password, $email, $firstname, $lastname){
+    $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    $id = $this->id;
+
+    if (!empty($login) AND !empty($password) AND !empty($email) AND !empty($firstname) AND !empty($lastname)) {
+      $lenght_login = strlen($login);
+      $lenght_password = strlen($password);
+      $lenght_email = strlen($email);
+      $lenght_firstname = strlen($firstname);
+      $lenght_lastname = strlen($lastname);
+
+      if ($lenght_login <= 255 AND $lenght_password <=255 AND $lenght_email <= 255 AND $lenght_firstname <= 255 AND $lenght_lastname <= 255) {
+        $count = $bdd->prepare("SELECT COUNT(*) FROM utilisateurs WHERE login = :login");
+        $count->execute(array(':login' => $login));
+        $num_rows = $count->fetchColumn();
+
+        if (!$num_rows) {
+          $crypted_password = password_hash($password, PASSWORD_BCRYPT);
+          $insert = $bdd->prepare("UPDATE utilisateurs SET login = :login, password = :crypted_password, email = :email, firstname = :firstname, lastname = :lastname WHERE id = :id");
+          $insert->execute(array(
+            ':login' => $login,
+            ':crypted_password' => $crypted_password,
+            ':email' => $email,
+            ':firstname' => $firstname,
+            ':lastname' => $lastname,
+            ':id' => $id,
+          ));
+        }
+      }
+    }
   }
+
+
+// =============================================INFO USER================================================================================================
 
   public function isConnected(){
 
@@ -133,6 +198,8 @@ class User{
     return [$this->lastname];
   }
 
+
+// ===================================================REFRESH=====================================================================================
   public function refresh(){
 
   }
