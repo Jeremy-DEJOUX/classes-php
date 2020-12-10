@@ -44,7 +44,7 @@
           }
         }
       }
-      echo $error;
+      return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];
     }
 
     public function connect($login, $password){
@@ -61,6 +61,7 @@
           $result = mysqli_fetch_assoc($query);
 
           if (password_verify($password, $result['password'])) {
+            $this->id = $result['id'];
             $this->login = $login;
             $this->password = $result['password'];
             $this->email = $result['email'];
@@ -69,7 +70,7 @@
           }
         }
       }
-      return $error;
+      return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];
     }
 
 
@@ -102,7 +103,8 @@
       $old_login = $this->login;
       $bdd = mysqli_connect('localhost', 'root', '', 'classes');
       $error = null;
-      $login = mysqli_escape_string($bdd,htmlspecialchars(trim($login)));
+      $login
+       = mysqli_escape_string($bdd,htmlspecialchars(trim($login)));
       $password = mysqli_escape_string($bdd,htmlspecialchars(trim($password)));
       $email = mysqli_escape_string($bdd,htmlspecialchars(trim($email)));
       $firstname = mysqli_escape_string($bdd,htmlspecialchars(trim($firstname)));
@@ -121,13 +123,6 @@
           if ($query) {
             $crypted_password = password_hash($password, PASSWORD_BCRYPT);
             $update = mysqli_query($bdd, "UPDATE utilisateurs SET login = '$login', password = '$crypted_password', email = '$email', firstname = '$firstname', lastname = '$lastname' WHERE login = '$old_login'");
-            if ($update) {
-              $this->login = $login;
-              $this->password = $crypted_password;
-              $this->email = $email;
-              $this->firstname = $firstname;
-              $this->lastname = $lastname;
-            }
           }
         }
       }
@@ -165,8 +160,7 @@
 
     public function refresh(){
       $bdd = mysqli_connect('localhost', 'root', '', 'classes');
-      $user = $this->login;
-      $query = mysqli_query($bdd, "SELECT * FROM utilisateurs WHERE login = '$user'");
+      $query = mysqli_query($bdd, "SELECT * FROM utilisateurs WHERE id = {$this->id}");
       $count = mysqli_num_rows($query);
 
       if ($count) {

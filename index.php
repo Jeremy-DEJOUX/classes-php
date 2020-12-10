@@ -24,7 +24,7 @@
 
 
   echo "UPDATE";
-  $Jeremy->update('minato','12345', 'yondaime@', 'namikaze', 'minato');
+  $Jeremy->update('Gloubiboulga','12345', 'yondaime@', 'namikaze', 'minato');
   var_dump($Jeremy);
   echo "<br /> <br />";
 
