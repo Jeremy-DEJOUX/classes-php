@@ -8,7 +8,7 @@
   // echo "<br /> <br />";
 
   echo "CONNEXION";
-  $Jeremy->connect('lili', '12345');
+  $Jeremy->connect('kakashi', '12345');
   var_dump($Jeremy);
   echo "<br /> <br />";
 

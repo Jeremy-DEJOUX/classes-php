@@ -121,6 +121,13 @@
           if ($query) {
             $crypted_password = password_hash($password, PASSWORD_BCRYPT);
             $update = mysqli_query($bdd, "UPDATE utilisateurs SET login = '$login', password = '$crypted_password', email = '$email', firstname = '$firstname', lastname = '$lastname' WHERE login = '$old_login'");
+            if ($update) {
+              $this->login = $login;
+              $this->password = $crypted_password;
+              $this->email = $email;
+              $this->firstname = $firstname;
+              $this->lastname = $lastname;
+            }
           }
         }
       }
