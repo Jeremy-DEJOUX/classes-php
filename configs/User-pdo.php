@@ -141,7 +141,7 @@ class User{
     $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
     $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $id = $this->id;
+    $old_login = $this->login;
 
     if (!empty($login) AND !empty($password) AND !empty($email) AND !empty($firstname) AND !empty($lastname)) {
       $lenght_login = strlen($login);
@@ -151,20 +151,18 @@ class User{
       $lenght_lastname = strlen($lastname);
 
       if ($lenght_login <= 255 AND $lenght_password <=255 AND $lenght_email <= 255 AND $lenght_firstname <= 255 AND $lenght_lastname <= 255) {
-        $count = $bdd->prepare("SELECT COUNT(*) FROM utilisateurs WHERE login = :login");
-        $count->execute(array(':login' => $login));
-        $num_rows = $count->fetchColumn();
+        $count = $bdd->prepare("SELECT id FROM utilisateurs WHERE login = :login");
+        $count->execute(array(':login' => $old_login));
 
-        if (!$num_rows) {
+        if ($count) {
           $crypted_password = password_hash($password, PASSWORD_BCRYPT);
-          $insert = $bdd->prepare("UPDATE utilisateurs SET login = :login, password = :crypted_password, email = :email, firstname = :firstname, lastname = :lastname WHERE id = :id");
+          $insert = $bdd->prepare("UPDATE utilisateurs SET login = :login, password = :crypted_password, email = :email, firstname = :firstname, lastname = :lastname WHERE login = '$old_login'");
           $insert->execute(array(
             ':login' => $login,
             ':crypted_password' => $crypted_password,
             ':email' => $email,
             ':firstname' => $firstname,
             ':lastname' => $lastname,
-            ':id' => $id,
           ));
         }
       }
@@ -175,7 +173,12 @@ class User{
 // =============================================INFO USER================================================================================================
 
   public function isConnected(){
-
+    if ($this->login) {
+      echo "<br />Un Utilisateur est connecté";
+    }
+    else {
+      echo "Pas d'utilisateur connecté";
+    }
   }
 
   public function getAllInfos(){
@@ -201,18 +204,24 @@ class User{
 
 // ===================================================REFRESH=====================================================================================
   public function refresh(){
+    $bdd = new PDO('mysql:host=localhost;dbname=classes;charset=utf8', 'root', '');
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $error = null;
+    $id = $this->id;
 
+    $select = $bdd->prepare("SELECT * FROM utilisateurs WHERE id = :id");
+    $select->execute([ ':id' => $id ]);
+      while ($donnees = $select->fetch()){
+        $this->login = $donnees['login'];
+        $this->password = $donnees['password'];
+        $this->email = $donnees['email'];
+        $this->firstname = $donnees['firstname'];
+        $this->lastname = $donnees['lastname'];
+        $error = "<b>Modification du Profil réussi</b>";
+    }
+    echo $error;
+    return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];
   }
 }
-
-
-
-
-
-
-
-
-
-
 
  ?>

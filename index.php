@@ -31,9 +31,9 @@
   // echo "Connected";
   // $Jeremy->isConnected();
   // var_dump($Jeremy);
-  echo "AllInfo";
-  var_dump($Jeremy->getAllInfos());
-  echo "<br />  <br />";
+  // echo "AllInfo";
+  // var_dump($Jeremy->getAllInfos());
+  // echo "<br />  <br />";
   //
   //
   // echo "Login";

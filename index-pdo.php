@@ -3,12 +3,12 @@ require_once('configs/User-pdo.php');
 $Fabrice = new User();
 
 echo "INSCRIPTION <br />";
-// $Fabrice->register('User 20', 'mages', 'jeremy@dejoux', 'jeremy', 'yondaime');
+// $Fabrice->register('User 22', 'mages', 'jeremy@dejoux', 'jeremy', 'yondaime');
 // var_dump($Fabrice);
 echo "<br />";
 
 echo "CONNEXION <br />";
-$Fabrice->connect('User 16', 'mages');
+$Fabrice->connect('User 60', 'mages');
 var_dump($Fabrice);
 echo "<br />";
 
@@ -23,7 +23,16 @@ echo "SUPRESSION <br />";
 echo "<br />";
 
 echo "NOUVEAU";
-$Fabrice->update('User 21', 'mages', 'jeremy@dejoux', 'jeremy', 'yondaime');
+$Fabrice->update('User 40', 'mages', 'jeremy@dejoux', 'jeremy', 'yondaime');
 var_dump($Fabrice);
 echo "<br />";
+
+echo "UTILISATEUR CONNECTE";
+// $Fabrice->isConnected();
+// var_dump($Fabrice);
+echo "<br />";
+
+
+echo "REFRESH";
+var_dump($Fabrice->refresh());
  ?>
