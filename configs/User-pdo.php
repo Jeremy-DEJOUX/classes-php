@@ -174,12 +174,22 @@ class User{
 
   public function isConnected(){
     if ($this->login) {
-      echo "<br />Un Utilisateur est connecté";
+      return true;
     }
     else {
       echo "Pas d'utilisateur connecté";
     }
   }
+
+
+
+
+
+
+
+
+
+
 
   public function getAllInfos(){
     return [$this->login, $this->password, $this->email, $this->firstname, $this->lastname];

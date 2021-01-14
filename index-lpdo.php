@@ -1,26 +1,39 @@
 <?php
 require_once('configs/lpdo.php');
 
-echo "Construct";
+echo "<b>Construct :</b> <br />";
 $Minato = new lpdo();
 $Minato->constructeur('localhost', 'root', '', 'classes');
-var_dump($Minato);
-echo "<br />";
+echo "<br /> <br />";
 
-echo "Connexion";
+echo "<b>Connexion :</b> <br />";
 $Minato->connect('localhost', 'root', '', 'classes');
-var_dump($Minato);
-echo "<br />";
+echo "<br /> <br />";
 
-// echo "DESTRUCT";
+// echo "DESTRUCT <br />";
 // $Minato->destructeur();
-// var_dump($Minato);
+// echo "<br />";
+//
+// echo "CLOSE <br />";
+// $Minato->close();
 // echo "<br />";
 
-echo "CLOSE";
-$Minato->close();
-var_dump($Minato);
+
+echo "EXECUTE <br />";
+$login = "User 60";
+$Minato->execute("SELECT * FROM utilisateurs WHERE login = 'User 40'");
 echo "<br />";
+
+
+echo "LASTQUERRY <br />";
+$Minato->getLastQuery();
+echo "<br />";
+
+
+echo "LASTRESULT <br />";
+$Minato->getLastResult();
+echo "<br />";
+
 
 
 
